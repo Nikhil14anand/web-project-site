@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Community</title>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+</head>
+<style>
+    .community-header-top {
+        background-color: rgb(72, 187, 223);
+    }
+
+    .col-sm-10,
+    .col-xs-7,
+    .col-sm-12,
+    .col-sm-5 {
+        position: relative;
+        min-height: 1px;
+        padding-right: 15px;
+        padding-left: 15px
+    }
+
+    .col-sm-push-4 {
+        left: 34%
+    }
+
+    .community-sub-head {
+        margin: 0px 60px;
+
+    }
+
+    .community-head-btn {
+        border-style: solid;
+        border-width: 3px !important;
+        border-color: white !important;
+        color: white;
+    }
+
+    .community-list-image {
+        padding: 10px;
+        z-index: 100;
+    }
+
+    .panel {
+        margin: 30px;
+        padding: 20px;
+    }
+
+    .panel-heading {
+        background-color: rgb(63, 170, 202);
+    }
+
+    .cummunityhead {
+        color: white;
+        margin: 10px;
+        padding: 10px;
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    .community-list-item {
+        padding: 20px;
+        border-top: 2px solid transparent;
+        border-bottom: 2px solid transparent;
+        border-color: #CCCCCC;
+        display: grid;
+        grid-template-columns: 1fr 12fr;
+    }
+
+    .community-panel-btn {
+        border-style: solid !important;
+        border-width: 1px !important;
+        border-color: white !important;
+        /* margin-left: 90%; */
+    }
+
+    .main {
+        margin-left: 50px;
+        margin-top: 60px;
+        margin-right: 0px;
+        transition: .5s;
+        /* display: grid; */
+        /* grid-template-rows: 1fr; */
+        /* padding: 20px; */
+        /* border-width: 2px;
+    border-style: solid;
+    border-color: rgb(216, 214, 214);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); */
+        background-color: rgb(252, 252, 252);
+    }
+
+    .cpic {
+        background: rgb(255, 255, 255) !important;
+        height: 50px;
+        width: 50px;
+        border: 3px solid #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+</style>
+
+<body>
+    <%- include('header.ejs',{user : user}) %>
+    <%- include('sidebar.ejs',{user : user}) %>
+    <div class="main" id="main">
+        <div class="community-header-top" style="height:50px;padding-top:6px;">
+            <div class="col-sm-12 community-sub-head">
+                <a class="btn community-head-btn active" href="/community/communitypanel">
+                    <i class="fa fa-users"></i>
+                </a>
+                <a class="btn community-head-btn" style="margin-left:10px" href="/community/list">
+                    <i class="fa fa-search"></i>
+                </a>
+            </div>
+        </div>
+        <div class="panel panel-default allSidesSoft community-panel-main-div">
+            <div class="panel-heading community-panel-heading">
+                <div class="cummunityhead"><span style="margin-right: 80%">My Communities</span><span>
+                        <a href="/community/AddCommunity" class="btn btn-info community-panel-btn">Create</a></span>
+                </div>
+            </div>
+            <div class="community-list-data" id="community-list-data">
+
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    var content = document.getElementById("community-list-data");
+    var request = new XMLHttpRequest();
+    request.open('post', "/community/communitypannel/mycreated");
+    request.setRequestHeader("Content-Type", "Application/JSON")
+    request.send();
+    request.addEventListener('load', function () {
+        if (request.status === 200) {
+            var result = JSON.parse(request.responseText);
+            for (var i in result) {
+                console.log(result[i]);
+                var divhead = document.createElement("div");
+                divhead.setAttribute("class", "community-list-item");
+                var imagediv = document.createElement("div");
+                imagediv.setAttribute("class", "community-list-image");
+                imagediv.innerHTML = "<a href='/community/discussion/"+result[i]._id+"'><img src='/uploads/" + result[i].imagepath + "' class='cpic'></a>";
+                divhead.appendChild(imagediv);
+                var contentdiv = document.createElement("div");
+                contentdiv.setAttribute("class", "community-list-content");
+                var code =
+                    "<div class='col-sm-10 col-xs-7' style='padding-top:25px;padding-bottom:5px;overflow:hidden'><p style='margin:0'><a class='comnametxt' href='/community/discussion/" +
+                    result[i]._id + "'>" + result[i].name + "</p></div>"
+                contentdiv.innerHTML = code;
+                divhead.appendChild(contentdiv);
+                content.appendChild(divhead);
+            }
+        }
+    });
+</script>
+
+</html>

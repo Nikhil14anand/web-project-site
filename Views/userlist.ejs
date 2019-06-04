@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        User List
+    </title>
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <!-- <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script> -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js">
+    </script>
+
+</head>
+<style>
+    .main {
+        margin-left: 100px;
+        margin-top: 80px;
+        background-color: rgb(250, 250, 250);
+        transition: .5s;
+    }
+
+    .usertable {
+        border-width: 1px;
+        margin: 50px;
+        border-style: solid;
+        border-color: rgb(204, 203, 203);
+        width: 100%;
+    }
+
+    .dataTables_paginate {
+        margin-top: 10px;
+    }
+
+    .dataTables_filter {
+        margin-bottom: 10px;
+    }
+
+    select {
+        background-color: white;
+        width: 60px;
+        height: 25px;
+    }
+
+    .sorting {
+        border: .5px;
+        border-style: solid;
+        border-color: rgb(240, 240, 240);
+    }
+
+    .tabtext {
+        font-size: 14px;
+        color: white;
+        background-color: rgba(0, 0, 0, 0.76);
+        margin: 10px 5px 30px 5px;
+    }
+
+    .userdisp {
+        height: 20px;
+        padding: 5px 10px 5px 10px;
+        text-align: center;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px 0 rgb(116, 115, 115);
+    }
+
+    .querytab {
+        float: right;
+        padding: 0px 5px;
+        height: 30px;
+    }
+
+    .actioncolumn {
+        text-align: center;
+    }
+
+    .actionbut {
+        padding: 5px 8px 5px 8px;
+        cursor: pointer;
+        margin: 5px;
+        font-size: 14px;
+        color: white;
+        display: inline-block;
+    }
+
+    .emailbut {
+        background-color: black;
+
+    }
+
+    .editbut {
+        background-color: blue;
+    }
+
+    .editmodal-div {
+        height: 30px;
+        display: grid;
+        grid-template-columns: 1fr 4fr;
+        font-size: 14px;
+    }
+
+    .editmodal-label {
+        text-align: right;
+        margin: 10px;
+    }
+
+    .editmodal-select {
+        height: 30px;
+        width: 100%;
+        border-radius: 5px;
+    }
+
+    .editmodal-input {
+        width: 100%;
+        height: 25px;
+        border-radius: 5px;
+        border-width: 1px;
+        background-color: white;
+        padding-left: 5px;
+
+    }
+
+    .modal-button {
+        background-color: white;
+        cursor: pointer;
+        width: 65px;
+        height: 35px;
+        display: inline-block;
+        padding: 6px 12px 6px 12px;
+        border-style: solid;
+        border-width: 1px;
+        border-radius: 3px;
+        text-align: center;
+    }
+
+    .modal-button:hover {
+        background-color: rgb(224, 224, 224);
+    }
+
+    .deactivatebut {
+        background-color: rgb(255, 196, 0);
+    }
+
+    .activatebut {
+        background-color: rgb(81, 255, 0);
+    }
+
+    .emailmodal-div {
+        height: 30px;
+        display: grid;
+        grid-template-columns: 1fr 8fr;
+        font-size: 14px;
+        margin: 5px 40px;
+    }
+
+    .emailcontent-input {
+        display: grid;
+        grid-template-columns: 1fr;
+        font-size: 14px;
+        margin: 5px 40px;
+        height: 50px;
+    }
+
+    tr {
+        height: 45px;
+    }
+</style>
+
+<body style="background-color: rgb(250, 250, 250)">
+    <%- include('header.ejs',{user : user}) %>
+  <%- include('sidebar.ejs',{user : user}) %>
+    <div id="main" class="main">
+        <span class="tabtext userdisp" style="float:left;font-size: 16px"><b>User List</b></span>
+        <select class="tabtext querytab" name="roletab" required style="width: 180px" id="roletab">
+            <option value="all">All</option>
+            <option value="admin">Admins</option>
+            <option value="user">Users</option>
+            <option value="community builder">Community Builders</option>
+        </select>
+
+        <select class="tabtext querytab" name="statustab" required style="width: 130px" id="statustab">
+            <option value="all">All</option>
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+        </select>
+        <span class="tabtext userdisp" id="refreshbut" style="float:right;cursor: pointer; font-size: 16px"><i
+                class='fas fa-sync-alt' style='font-size:14px;color:white'></i> Refresh</span>
+
+        <table id="usertable" class="usertable display cell-border" style="width: 100%">
+            <thead>
+                <tr>
+                    <th class="cell-border">Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>City</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+
+        <div class="container">
+            <!-- Edit User Modal -->
+            <div class="modal fade" id="edit-userdetails-modal" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" style="cursor: pointer"
+                                data-dismiss="modal">&times;</button>
+                            <h2 class="modal-title" id="editbut-header">Modal Header</h2>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/admin/userlist/updateuser" method="POST">
+                                <div class="editmodal-div">
+                                    <div class="editmodal-label">
+                                        <label>Username: </label>
+                                    </div>
+                                    <div class="editmodal-input-div">
+                                        <input id="update-username" name="username" value="" required
+                                            class="editmodal-input">
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="editmodal-div">
+                                    <div class="editmodal-label">
+                                        <label>Phone: </label>
+                                    </div>
+                                    <div class="editmodal-input-div">
+                                        <input id="update-phone" name="phno" value="" required class="editmodal-input">
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="editmodal-div">
+                                    <div class="editmodal-label">
+                                        <label>City: </label>
+                                    </div>
+                                    <div class="editmodal-input-div">
+                                        <input id="update-city" name="city" value="" required class="editmodal-input">
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="editmodal-div">
+                                    <div class="editmodal-label">
+                                        <label>Status: </label>
+                                    </div>
+                                    <div class="editmodal-input-div">
+                                        <select name="status" id="update-status" required class="editmodal-select">
+                                            <option value="confirmed">Confirmed</option>
+                                            <option value="pending">Pending</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="editmodal-div">
+                                    <div class="editmodal-label">
+                                        <label>Role: </label>
+                                    </div>
+                                    <div class="editmodal-input-div">
+                                        <select name="role" required id="update-role" class="editmodal-select">
+                                            <option value="admin">Admin</option>
+                                            <option value="user">User</option>
+                                            <option value="community builder">Community Builder</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="editmodal-div">
+                                    <div><input name="email" id="update-email" type="hidden" value=""></div>
+                                    <div>
+                                        <input type="submit" class="btn btn-default" value="Update">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="button" class="btn btn-default" data-dismiss="modal" value="Close">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Deactivate User Modal -->
+            <div class="modal fade" id="deactivate-user-modal" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" style="cursor: pointer"
+                                data-dismiss="modal">&times;</button>
+                            <h3 class="modal-title" id="deactivatebut-header">Deactivate User?</h4>
+                        </div>
+                        <div class="modal-body" id="deactivate-user-body">
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" onclick="deactivateyes()"
+                                data-dismiss="modal">Yes</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Activate User Modal -->
+            <div class="modal fade" id="activate-user-modal" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" style="cursor: pointer"
+                                data-dismiss="modal">&times;</button>
+                            <h3 class="modal-title" id="activatebut-header">Activate User?</h4>
+                        </div>
+                        <div class="modal-body" id="activate-user-body">
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" onclick="Activateyes()"
+                                data-dismiss="modal">Yes</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Send email User Modal -->
+            <div class="modal fade" id="email-user-modal" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" style="cursor: pointer"
+                                data-dismiss="modal">&times;</button>
+                            <h3 class="modal-title" id="email-header">Send Reminder Mail</h4>
+                        </div>
+                        <div class="modal-body" id="email-user-body">
+                            <div class="emailmodal-div">
+                                <div class="editmodal-label">
+                                    <label>To: </label>
+                                </div>
+                                <div class="editmodal-input-div">
+                                    <input id="sendto-useremail" name="sendtoemail" value="email" required
+                                        class="editmodal-input" readonly>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="emailmodal-div">
+                                <div class="editmodal-label">
+                                    <label>Subject: </label>
+                                </div>
+                                <div class="editmodal-input-div">
+                                    <input id="subject-useremail" name="subjectemail" value="" required
+                                        class="editmodal-input">
+                                </div>
+                            </div>
+                            <br>
+                            <div class="emailcontent-input">
+                                <input id="content-useremail"></input>
+                            </div>
+                            <br>
+                            <button class="btn btn-default" data-dismiss="modal" id="submitmail">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+<script>
+    var table = "1"
+    var names;
+    var allentries;
+    let globalstatus = 0;
+    var globalrole = 0;
+
+    $(document).ready(function () {
+        table = $('#usertable').DataTable({
+            processing: true,
+            serverSide: true,
+            "ajax": {
+                "url": "/admin/userlist/data",
+                "type": "POST",
+                "data": function (d) {
+                    d.querystatus = globalstatus;
+                    d.queryrole = globalrole
+                }
+            },
+            "columns": [{
+                    "data": "name"
+                },
+                {
+                    "data": "email"
+                },
+                {
+                    "data": "phno"
+                },
+                {
+                    "data": "role"
+                },
+                {
+                    "data": "status"
+                },
+                {
+                    "data": "city"
+                },
+                {
+                    "data": null
+                },
+            ],
+            "columnDefs": [{
+                "targets": -1,
+
+                "render": function (data, type, row, meta) {
+                    var r = row.role;
+                    if (r === "superuser") {
+                        return '<center><span class="actionbut emailbut" id="emailbut"><i class="fas fa-envelope"></i></span></center>';
+                    } else {
+                        var visible = row.visibility;
+                        if (visible) {
+                            return '<center><span class="actionbut emailbut" id="emailbut"><i class="fas fa-envelope"></i></span><span class="actionbut editbut" id="editbut"><i class="fas fa-edit"></i></span><span class="actionbut deactivatebut" id="deactivatebut"><i class="fa fa-times-circle"></i></span></center>';
+                        } else {
+                            return '<center><span class="actionbut emailbut" id="emailbut"><i class="fas fa-envelope"></i></span><span class="actionbut editbut" id="editbut"><i class="fas fa-edit"></i></span><span class="actionbut activatebut" id="activatebut"><i class="fa fa-check-circle"></i></span></center>'
+                        }
+                    }
+                }
+            }],
+            "contentType": "application/json",
+        });
+    });
+
+    var refreshbut = document.getElementById("refreshbut");
+    var statustab = document.getElementById("statustab");
+    var roletab = document.getElementById("roletab");
+    roletab.onclick = printconsole;
+    statustab.onclick = printconsole;
+    refreshbut.onclick = printconsole;
+    var UserData;
+    var actionbutton;
+
+    function printconsole() {
+        // console.log(statustab.selectedIndex);
+        // console.log(roletab.selectedIndex);
+        if (statustab.selectedIndex == '0')
+            globalstatus = "0";
+        else if (statustab.selectedIndex == "1")
+            globalstatus = "pending";
+        else
+            globalstatus = "confirmed";
+
+        if (roletab.selectedIndex == "0")
+            globalrole = "0";
+        else if (roletab.selectedIndex == "1")
+            globalrole = "admin";
+        else if (roletab.selectedIndex == "2")
+            globalrole = "user";
+        else
+            globalrole = "community builder"
+        table.draw();
+    }
+
+    $(document).on("click", "#editbut", function () {
+        UserData = $(this).parent().parent().parent()[0].children;
+        //$(".modal-body #bookId").val( UserData );
+        $('#editbut-header').html("Update " + UserData[1].innerHTML);
+        $('#update-username').val(UserData[0].innerHTML);
+        $('#update-phone').val(UserData[2].innerHTML);
+        $('#update-city').val(UserData[5].innerHTML);
+        $('#update-email').val(UserData[1].innerHTML);
+        $('#update-status').val(UserData[4].innerHTML);
+        $('#update-role').val(UserData[3].innerHTML);
+        $('#edit-userdetails-modal').modal('show');
+    });
+
+    $(document).on("click", "#deactivatebut", function () {
+        //console.log("Deactivate button clicked");
+        UserData = $(this).parent().parent().parent()[0].children;
+        actionbutton = $(this).parent();
+        $('#deactivate-user-body').html("Are you sure you want to deactivate " + UserData[1].innerHTML +
+            " ?");
+        $('#deactivate-user-modal').modal('show');
+    });
+
+    $(document).on("click", "#emailbut", function () {
+        console.log("Email button clicked");
+        UserData = $(this).parent().parent().parent()[0].children;
+        console.log(UserData[1].innerHTML);
+        //actionbutton = $(this).parent();
+        $('#sendto-useremail').val(UserData[1].innerHTML);
+        $('#subject-useremail').val("Sent By Nikhil");
+        //$('#subject-useremail').html()
+        $('#email-user-modal').modal('show');
+    });
+
+    $(document).on("click", "#activatebut", function () {
+        //console.log("Deactivate button clicked");
+        UserData = $(this).parent().parent().parent()[0].children;
+        actionbutton = $(this).parent();
+        $('#activate-user-body').html("Are you sure you want to activate " + UserData[1].innerHTML +
+            " ?");
+        $('#activate-user-modal').modal('show');
+    });
+
+    function deactivateyes() {
+        //console.log("Pressed deactivate yes button");
+        console.log(UserData[1].innerHTML);
+        console.log(actionbutton[0].childNodes);
+        var request = new XMLHttpRequest();
+        request.open('post', "/admin/userlist/disableuser");
+        request.setRequestHeader("Content-Type", "Application/JSON");
+        request.send(JSON.stringify({
+            "email": UserData[1].innerHTML
+        }));
+        request.addEventListener('load', function () {
+            if (request.status === 200) {
+                var result = JSON.parse(request.responseText);
+                if (result == "0") {
+                    alert("connection problem or email not matched");
+                } else if (result == "1") {
+                    console.log("Changed visibility at backend");
+                    // location.reload();
+                    table.draw();
+                } else {
+                    alert(result);
+                }
+            }
+        });
+    }
+
+    function Activateyes() {
+        //console.log("Pressed deactivate yes button");
+        console.log(UserData[1].innerHTML);
+        console.log(actionbutton[0].childNodes);
+        var request = new XMLHttpRequest();
+        request.open('post', "/admin/userlist/enableuser");
+        request.setRequestHeader("Content-Type", "Application/JSON");
+        request.send(JSON.stringify({
+            "email": UserData[1].innerHTML
+        }));
+        request.addEventListener('load', function () {
+            if (request.status === 200) {
+                var result = JSON.parse(request.responseText);
+                if (result == "0") {
+                    alert("connection problem or email not matched");
+                } else if (result == "1") {
+                    console.log("Changed visibility at backend");
+                    // location.reload();
+                    table.draw();
+                } else {
+                    alert(result);
+                }
+            }
+        });
+    }
+
+    $(document).on("click", "#submitmail", function () {
+        UserData = $(this).parent();
+        console.log(UserData[0].children[4].children[0].value);
+        var sendto = UserData[0].children[0].children[1].children[0].value;
+        var subject = UserData[0].children[2].children[1].children[0].value;
+        var content = UserData[0].children[4].children[0].value;
+        var request = new XMLHttpRequest();
+        request.open('post', "/admin/userlist/email");
+        request.setRequestHeader("Content-Type", "Application/JSON")
+        request.send(JSON.stringify({
+            "sendto": sendto,
+            "subject": subject,
+            "content": content
+        }));
+        request.addEventListener('load', function () {
+            if (request.status === 200) {
+                var result = JSON.parse(request.responseText);
+                if (result == "0") {
+                    console.log("Error");
+                }
+                if (result == "1") {
+                    console.log("successful");
+                }
+            }
+        });
+    });
+</script>
+
+</html>

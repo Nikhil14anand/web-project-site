@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Community List</title>
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <!-- <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script> -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js">
+    </script>
+
+</head>
+<style>
+    .main {
+        margin-left: 100px;
+        margin-top: 80px;
+        background-color: rgb(250, 250, 250);
+        transition: .5s;
+    }
+
+    .actionbut {
+        padding: 5px 8px 5px 8px;
+        cursor: pointer;
+        margin: 5px;
+        font-size: 14px;
+        color: white;
+        display: inline-block;
+    }
+
+    .editbut {
+        background-color: rgb(47, 47, 94);
+    }
+
+    .tabtext {
+        font-size: 14px;
+        color: white;
+        background-color: rgba(0, 0, 0, 0.76);
+        margin: 10px 5px 30px 5px;
+    }
+
+    .userdisp {
+        height: 20px;
+        padding: 5px 10px 5px 10px;
+        text-align: center;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px 0 rgb(116, 115, 115);
+    }
+
+    .querytab {
+        float: right;
+        padding: 0px 5px;
+        height: 30px;
+    }
+
+    .cpic {
+        background: rgb(255, 255, 255) !important;
+        height: 50px;
+        width: 50px;
+        border: 3px solid #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .listing-deactive {
+        border-width: 2px;
+        border-style: solid;
+        border-color: red;
+    }
+
+    .listing-active {
+        border-width: 2px;
+        border-style: solid;
+        border-color: green;
+    }
+
+    .editmodal-div {
+        height: 30px;
+        display: grid;
+        grid-template-columns: 1fr 4fr;
+        font-size: 14px;
+    }
+
+    .editmodal-label {
+        text-align: right;
+        margin: 10px;
+    }
+
+    .editmodal-select {
+        height: 30px;
+        width: 100%;
+        border-radius: 5px;
+    }
+
+    .editmodal-input {
+        width: 100%;
+        height: 25px;
+        border-radius: 5px;
+        border-width: 1px;
+        background-color: white;
+        padding-left: 5px;
+
+    }
+
+    .modal-button {
+        background-color: white;
+        cursor: pointer;
+        width: 65px;
+        height: 35px;
+        display: inline-block;
+        padding: 6px 12px 6px 12px;
+        border-style: solid;
+        border-width: 1px;
+        border-radius: 3px;
+        text-align: center;
+    }
+
+    .modal-button:hover {
+        background-color: rgb(224, 224, 224);
+    }
+</style>
+
+<body style="background-color: rgb(250, 250, 250)">
+    <%- include('header.ejs',{user : user}) %>
+    <%- include('sidebar.ejs',{user : user}) %>
+    <div class="main" id="main">
+        <span class="tabtext userdisp" style="float:left;font-size: 16px"><b>Community List</b></span>
+        <select class="tabtext querytab" name="roletab" required style="width: 180px" id="roletab">
+            <option value="all">All</option>
+            <option value="direct">Direct</option>
+            <option value="permission">Permission</option>
+        </select>
+        <span class="tabtext userdisp" id="refreshbut" style="float:right;cursor: pointer; font-size: 16px"><i
+                class='fas fa-sync-alt' style='font-size:14px;color:white'></i> Refresh</span>
+
+        <table id="usertable" class="usertable display cell-border" style="width: 100%">
+            <thead>
+                <tr>
+                    <th class="cell-border">Community Name</th>
+                    <th>Membership Rule</th>
+                    <th>Community owner</th>
+                    <th>Creation Date</th>
+                    <th>Actions</th>
+                    <th>Community Pic</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+
+        <div class="container">
+            <!-- Edit User Modal -->
+            <div class="modal fade" id="edit-commdetails-modal" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" style="cursor: pointer"
+                                data-dismiss="modal">&times;</button>
+                            <h2 class="modal-title" id="editbut-header" style="margin: 5px;">Community name</h2>
+                            <h5 id="editbut-creator" style="margin: 2px 5px;font-weight: 200"></h5>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/community/communitylist/updatecommunity" method="POST">
+                                <div class="editmodal-div">
+                                    <div class="editmodal-label">
+                                        <label>Community name: </label>
+                                    </div>
+                                    <div class="editmodal-input-div">
+                                        <input id="update-commname" name="commname" value="" required
+                                            class="editmodal-input">
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="editmodal-div">
+                                    <div class="editmodal-label">
+                                        <label>Status: </label>
+                                    </div>
+                                    <div class="editmodal-input-div">
+                                        <select name="status" id="update-commstatus" required class="editmodal-select">
+                                            <option value="active">Active</option>
+                                            <option value="deactive">Deactive</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="editmodal-div">
+                                    <div style="display: none">
+                                        <input name="email" id="update-creatoremail" type="hidden" value="" readonly>
+                                        <input name="origcommname" id="original-comname" type="hidden" value="" readonly>
+                                    </div>
+                                    <div>
+                                        <input type="submit" class="btn btn-default" value="Update">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="button" class="btn btn-default" data-dismiss="modal" value="Close">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</body>
+<script>
+    $(document).ready(function () {
+        table = $('#usertable').DataTable({
+            processing: true,
+            serverSide: true,
+            "ajax": {
+                "url": "/community/communitylist/data",
+                "type": "POST",
+                // "data": function (d) {
+                //     d.querystatus = globalstatus;
+                //     d.queryrole = globalrole
+                // }
+            },
+            "columns": [{
+                    "data": "name"
+                },
+                {
+                    "data": "rule"
+                },
+                {
+                    "data": "creator"
+                },
+                {
+                    "data": "createdate"
+                },
+                {
+                    "data": null
+                },
+                {
+                    "data": "imagepath"
+                },
+            ],
+
+            "columnDefs": [{
+                "targets": -1,
+                "render": function (data, type, row, meta) {
+                    var r = row.imagepath;
+                    if (row.status == "deactive")
+                        return "<center><img src='/uploads/" + r +
+                            "' class='cpic listing-deactive'></center>";
+                    else
+                        return "<center><img src='/uploads/" + r +
+                            "' class='cpic listing-active'></center>";
+                }
+            }, {
+                "targets": -2,
+                "render": function (data, type, row, meta) {
+                    return '<center><span class="actionbut editbut" id="editbut"><i class="fas fa-edit"></i></span></center>'
+                }
+            }],
+            "contentType": "application/json",
+        });
+    });
+
+    $(document).on("click", "#editbut", function () {
+        var UserData = $(this).parent().parent().parent()[0].children;
+        console.log(UserData);
+        var value = UserData[5].children[0].childNodes[0].classList[1];
+        if(value=="listing-deactive")
+        {
+            $('#update-commstatus').val("deactive");
+        }
+        else{
+            $('#update-commstatus').val("active");
+        }
+        $('#editbut-header').html("Update " + UserData[0].innerHTML);
+        $('#update-creatoremail').val(UserData[2].innerHTML);
+        $('#original-comname').val(UserData[0].innerHTML);
+        $('#editbut-creator').html("Created On"+ UserData[3].innerHTML);
+        $('#update-commname').val(UserData[0].innerHTML);
+        $('#edit-commdetails-modal').modal('show');
+    });
+</script>

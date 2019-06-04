@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Add Community</title>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+</head>
+<style>
+    .main {
+        margin-left: 50px;
+        margin-top: 60px;
+        margin-right: 0px;
+        transition: .5s;
+        background-color: rgb(240, 240, 240);
+
+    }
+
+    .community-header-top {
+        background-color: rgb(72, 187, 223);
+    }
+
+    .page-header {
+        padding-bottom: 9px;
+        margin: 40px 0 20px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .col-sm-12,
+    .col-sm-5 {
+        position: relative;
+        min-height: 1px;
+        padding-right: 15px;
+        padding-left: 15px
+    }
+
+    .col-sm-push-4 {
+        left: 34%
+    }
+
+    .radio {
+    position: relative;
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 10px
+}
+
+.radio-inline input[type=radio] {
+    position: absolute;
+    margin-top: 4px\9;
+    margin-left: -20px
+}
+
+.checkbox-inline,
+.radio-inline {
+    position: relative;
+    display: inline-block;
+    padding-left: 20px;
+    margin-bottom: 0;
+    font-weight: 400;
+    vertical-align: middle;
+    cursor: pointer
+}
+
+    .community-sub-head {
+        margin: 0px 60px;
+
+    }
+
+    .community-head-btn {
+        border-style: solid;
+        border-width: 3px !important;
+        border-color: white !important;
+        color: white;
+    }
+
+    .content-container {
+        display: grid;
+        grid-template-columns: 1.5fr 3fr 1.5fr;
+    }
+</style>
+
+<body style="background-color:  rgb(240, 240, 240)">
+    <%- include('header.ejs',{user : user}) %>
+    <%- include('sidebar.ejs',{user : user}) %>
+    <div class="main" id="main">
+        <div class="community-header-top" style="height:50px;padding-top:6px;">
+            <div class="col-sm-12 community-sub-head">
+                <a class="btn community-head-btn active" href="/community/communitypanel">
+                    <i class="fa fa-users"></i>
+                </a>
+                <a class="btn community-head-btn" style="margin-left:10px" href="/community/list">
+                    <i class="fa fa-search"></i>
+                </a>
+            </div>
+        </div>
+        <div class="content-container">
+            <div style="background-color: rgb(240, 240, 240)"></div>
+            <div class="contentwindow">
+                <div class="form-horizontal col-sm-6 col-md-6 col-lg-6">
+                    <h3 class="page-header" style="color:#707070;font-size: 24px;">Create Community</h3>
+                    <form action="/community/AddCommunity" method="POST" enctype="multipart/form-data">
+                        
+                        <div class="form-group">
+                            <input class="form-control" required name="communityName" placeholder="name"
+                                maxlength="70">
+                        </div>
+                        <div class="form-group">
+                            <label style="color:#707070;font-size: 20px" class="page-header">Description</label>
+                        </div>
+                        <br>
+                        <div class="content-description">
+                                <textarea type="text" class="form-control" style="height: 200px;" name="description"></textarea>
+                                <div class="form-group ">
+                                        <label style="color:#707070">Rule :</label>
+                                        <input class="radio radio-inline" type="radio" value="direct" name="communityMembershipRule"> Direct
+                                        <input class="radio radio-inline" type="radio" checked="" value="permission" name="communityMembershipRule"> Permission
+                                </div>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                                <div class="col-xs-4 col-sm-3">
+                                  <span class="btn btn-warning" onclick="$('#file').click()">Upload Image</span>
+                                </div>
+                        </div>
+                        <br>
+                        <div class="form-group" style="display:none">
+                                <input type="file" id="file" name="community-" accept="image/*">
+                        </div>
+                        <div class="form-group">
+                                <input class="form-control btn btn-primary" type="submit" value="Create Community">
+                        </div>
+                        <br>
+                    </form>
+                </div>
+            </div>
+            <div style="background-color: rgb(240, 240, 240)"></div>
+        </div>
+</body>

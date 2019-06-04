@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Adding user</title>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+</head>
+<style>
+    .basicinput {
+        padding: 10px;
+        margin: 10px 15px 10px 10px;
+        width: 90%;
+        height: 15px;
+    }
+
+    .loginwindow {
+        border-width: 5px;
+        border-style: solid;
+        border-color: rgb(216, 214, 214);
+        background-color: White;
+        /* text-align: center; */
+        display: grid;
+        grid-template-columns: 1fr 5fr 1fr;
+        padding: 10px;
+    }
+
+    /* button {
+        height: 40px;
+        width: 35%;
+        padding: 10px;
+        margin-block-end: 20px;
+        background-color: rgb(119, 192, 10);
+        align-self: center;
+    } */
+
+    .selectdrop {
+        padding: 10px;
+        margin: 10px 15px 10px 10px;
+        width: 95%;
+        height: 40px;
+        background-color: white;
+    }
+
+    #head {
+        font-size: 45px;
+        margin-left: 10px;
+        margin-top: 20px;
+        padding-top: 10px;
+    }
+
+    #role {
+        font-size: 20px;
+        margin-left: 10px;
+    }
+
+    .main {
+        margin-top: 80px;
+        display: grid;
+        grid-template-columns: 1.5fr 3fr 1.5fr;
+    }
+</style>
+
+<body style="background-color: rgb(236, 236, 236)">
+    <%- include('header.ejs',{user : user}) %>
+  <%- include('sidebar.ejs',{user : user}) %>
+    <div class="main" id="main">
+        <div style="background-color: rgb(236, 236, 236)"></div>
+        <div class="loginwindow">
+            <div></div>
+            <div style="padding-top: 20px">
+                <label id="head">ADD USER</label>
+                <form action="/adduser" method="POST">
+                    <input name="name" placeholder="Name" required class="basicinput">
+                    <br>
+                    <input name="email" placeholder="Email" required class="basicinput">
+                    <br>
+                    <select name="gender" class="selectdrop" required>
+                        <option disabled selected value="">Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                    <br>
+                    <input name="city" placeholder="City" required class="basicinput">
+                    <br>
+                    <input name="phone" placeholder="Phone" required class="basicinput">
+                    <br>
+                    <input name="dob" placeholder="Date of Birth" required class="basicinput">
+                    <br>
+                    <input name="password" placeholder="password" required class="basicinput">
+                    <br>
+                    <div class="form-group">
+
+                        <label id="role">Role:</label><br>
+                        <select name="role" required class="selectdrop">
+                            <option value="user" selected>User</option>
+                            <option value="community builder">Community Builder</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <center><button class="btn btn-success">Add User</button></center>
+                </form>
+            </div>
+            <div></div>
+        </div>
+        <div style="background-color: rgb(236, 236, 236)"></div>
+    </div>
+</body>
+
+<script>
+    document.getElementById("add-user-nav").style.backgroundColor = "blue";
+    document.getElementById("addusersidebutton").style.color = "white";
+    document.getElementById("menu-adduser").style.color = "white";
+    
+</script>
+
+</html>

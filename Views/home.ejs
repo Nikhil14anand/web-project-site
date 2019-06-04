@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Profile</title>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+</head>
+<style>
+  .user-details-panel {
+    border-width: 1px;
+    /* width: 500px; */
+    height: 80px;
+    margin: 15px 25px 15px 25px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  }
+
+  .panel-heading {
+    background-color: rgb(219, 219, 219);
+    padding: 5px;
+    height: 30px;
+  }
+
+  .panel-body {
+    background-color: rgb(255, 255, 255);
+    padding: 5px;
+    height: 30px;
+  }
+
+  .main {
+    margin-left: 60px;
+    margin-top: 80px;
+    transition: .5s;
+    position: relative;
+    /* display: grid; */
+    /* grid-template-rows: 1fr; */
+    padding: 20px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(216, 214, 214);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    background-color: rgb(252, 252, 252);
+  }
+
+  .profilepic {
+    height: 150px;
+    width: 150px;
+    border-width: 3px;
+    border-style: solid;
+    border-color: rgb(216, 214, 214);
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2)
+      /* background-color: bisque; */
+  }
+
+  .contents {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background-color: rgb(252, 252, 252);
+
+  }
+</style>
+
+<body style="background-color: rgb(250, 250, 250)">
+  <%- include('header.ejs',{user : user}) %>
+  <%- include('sidebar.ejs',{user : user}) %>
+  <div class="main" id="main">
+    <div>
+        <% if (user.imagepath) { %>
+          <img src="/uploads/<%= user.imagepath %>" class="profilepic">
+          <!-- <span class="label-success"><img src="/uploads/<%= user.imagepath %>" class="navbarpic"></span> -->
+          <% } else { %>
+              <img src="default.png" class="profilepic">
+          <% } %>
+      <a href="/editprofile" class="btn btn-primary" style="float:right;" id="editprofilebut">Edit</a>
+    </div>
+    <div class="contents">
+      <div class="user-details-panel">
+        <div class="panel-panel-default">
+          <div class="panel-heading">Name</div>
+          <div class="panel-body"><%= user.name%></div>
+        </div>
+      </div>
+      <div class="user-details-panel">
+        <div class="panel panel-default">
+          <div class="panel-heading">Email</div>
+          <div class="panel-body"><%= user.email%></div>
+        </div>
+      </div>
+      <div class="user-details-panel">
+        <div class="panel-panel-default">
+          <div class="panel-heading">Gender</div>
+          <div class="panel-body"><%= user.gender%></div>
+        </div>
+      </div>
+      <div class="user-details-panel">
+        <div class="panel panel-default">
+          <div class="panel-heading">City</div>
+          <div class="panel-body"><%= user.city%></div>
+        </div>
+      </div>
+      <div class="user-details-panel">
+        <div class="panel-panel-default">
+          <div class="panel-heading">Phone No</div>
+          <div class="panel-body"><%= user.phno%></div>
+        </div>
+      </div>
+      <div class="user-details-panel">
+        <div class="panel panel-default">
+          <div class="panel-heading">D.O.B</div>
+          <div class="panel-body"><%= user.dob%></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+var editbut = document.getElementById("editprofilebut");
+//console.log(window.location);
+if(window.location.href.indexOf("profile") > -1)
+{
+  console.log("inside profile");
+  document.getElementById("editprofilebut").style.display = "block";
+}
+else{
+  console.log("inside home");
+  document.getElementById("editprofilebut").style.display = "none";
+}
+</script>
+
+</html>

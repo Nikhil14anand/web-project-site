@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Login</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        .footer {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            padding: 1rem;
+            background-color: #fff;
+            /*#efefef*/
+            ;
+            text-align: center;
+            width: 100%;
+            height: 80px;
+        }
+
+        .form-control {
+            border-radius: 0
+        }
+
+        .background {
+            /* background-image: url('/app_pics/bg/header.jpg'); */
+            -webkit-filter: blur(8px);
+            -moz-filter: blur(8px);
+            -o-filter: blur(8px);
+            -ms-filter: blur(8px);
+            filter: blur(8px);
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        .row-centered {
+            text-align: center;
+        }
+
+        .col-centered {
+            display: inline-block;
+            float: none;
+            text-align: left;
+            margin-right: -4px;
+            text-align: center;
+        }
+
+        header {
+            z-index: 1;
+            background-color: #fff;
+            color: #000;
+        }
+
+        .allSides {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+            -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+            -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+            -o-box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+        }
+
+        .responsive-login-form {
+            width: 60%;
+        }
+
+        @media(max-width: 768px) {
+            .responsive-login-form {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header style="width: 100%;height:60px;text-align:left" class="allSides">
+        <p style="font-size: 30px;padding: 10px;font-weight: bold;">FOR FUN</p>
+    </header>
+    <center>
+        <div class="container" style="margin-top: 8%">
+            <div class="responsive-login-form allSides" style="height: 340px;background-color: #fff;">
+                <p style="padding: 1%;font-size: 34px;">Log Into Your Account</p>
+
+                <center>
+                    <div class="alert alert-danger" style="width:90%;display:none;" id="checkuser">Username/Password
+                        Incorrect.</div>
+                </center>
+
+                <div>
+                    <div class="form-group" style="margin: 10px">
+                        <input type="text" required name="name" class="form-control" placeholder="Username"
+                            id="name"><br>
+                    </div>
+                    <div class="form-group" style="margin: 10px">
+                        <input type="password" required name="password" class="form-control" placeholder="Password"
+                            id="password"><br>
+                    </div>
+                    <div class="form-group" style="margin: 10px">
+                        <input type="submit" value="Login" class="btn btn-success" id="submit">
+                        <a href="/auth/github" class="btn btn-primary">GITHUB</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </center>
+    <footer class="footer allSides" style="position:fixed">
+            <center>
+                <p id="copyright" style="font-size:20px;font-weight:bold;color:#7f7f84">cp © 2019</p>
+            </center>
+    </footer>
+    
+</body>
+<script>
+    var user = document.getElementById("name");
+    var submit = document.getElementById("submit");
+    var password = document.getElementById("password");
+    var checkuser = document.getElementById("checkuser");
+    var name = document.getElementById("name");
+    user.onkeydown=pressenter;
+    password.onkeydown=pressenter;
+
+    var request = new XMLHttpRequest();
+    submit.onclick = checklogin;
+
+    var date = new Date();
+    var currentdate = date.getFullYear();
+    document.getElementById("copyright").innerHTML = "for fun &copy; "+currentdate;
+
+    function checklogin() {
+        if (user.value == '' || password.value == '') {
+            alert("Invalid Input");
+        } else {
+            request.open('post', "/login");
+            request.setRequestHeader("Content-Type", "Application/JSON")
+            request.send(JSON.stringify({
+                "name": user.value,
+                "password": password.value
+            }));
+            request.addEventListener('load', function () {
+                if (request.status === 200) {
+                    var result = JSON.parse(request.responseText);
+                    if (result == "0") {
+                        checkuser.style.display = "block";
+                    }
+                    if (result == "1") {
+                        window.location = "/home";
+                    }
+                }
+            });
+        }
+    }
+    function pressenter(event){
+        var key=event.keyCode;
+        if(key==13)
+        {
+            checklogin();
+        }
+    }
+</script>
+
+</html>
